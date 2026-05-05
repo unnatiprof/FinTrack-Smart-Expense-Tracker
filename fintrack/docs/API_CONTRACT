@@ -1,0 +1,17 @@
+# FinTrack API Contract
+
+## Project Name
+
+FinTrack - Smart Expense Tracker
+
+## Purpose
+
+This document defines the REST API contract for the FinTrack backend.  
+It explains which APIs will be available, what request data they accept, and what response data they return.
+
+---
+
+# Base URL
+
+```text
+http://localhost:9090

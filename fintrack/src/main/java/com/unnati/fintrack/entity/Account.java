@@ -69,7 +69,7 @@ public class Account {
         }
     }
 
-    @PreUpdate
+    @PreUpdate // Runs before update. Before updating, it automatically changes: updatedAt. So GUI me Last Updated field automatically correct dikh sakega.
     public void beforeUpdate() {
         this.updatedAt = LocalDateTime.now();
     }

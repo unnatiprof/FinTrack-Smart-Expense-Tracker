@@ -22,15 +22,16 @@ import lombok.Setter;  //for importing @Setter.
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "transactions")
+@NoArgsConstructor //  generates empty constructor.
+@AllArgsConstructor  // generates all field constructor.
+@Builder  // used to generate builder pattern for clean object creation.
+@Entity  // means this class is a DB entity.
+@Table(name = "transactions") // explicitly gives the name "transactions" to the table created, otherwise by default table name will be the class name.
 public class Transaction {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id // means it will be the primary key of the table.
+    @GeneratedValue(strategy = GenerationType.AUTO) // This tells JPA to auto-generate the ID. You do not send id in POST request.
+    
     private Long id;
 
     private String title;
@@ -39,7 +40,7 @@ public class Transaction {
 
     private BigDecimal amount;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // This is used above enum fields. It tells JPA: Store enum value as readable string in database.
     private TransactionType type;
 
     private String category;

@@ -51,7 +51,7 @@ public class Account {
 
     private LocalDateTime updatedAt;
 
-    @PrePersist
+    @PrePersist // Runs before first save.
     public void beforeSave() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

@@ -8,6 +8,14 @@ import com.unnati.fintrack.enums.AccountType;
 import com.unnati.fintrack.enums.AccountStatus;
 import com.unnati.fintrack.enums.CurrencyType;
 
-public interface AccountRepository {
+public interface AccountRepository extends JpaRepository<Account, Long>
+{
+	List<Account> findbyAccountType(AccountType accountType);
+
+    List<Account> findByStatus(AccountStatus status);
+
+    List<Account> findByCurrency(CurrencyType currency);
+
+    List<Account> findByAccountNameContainingIgnoreCase(String accountName);
 
 }

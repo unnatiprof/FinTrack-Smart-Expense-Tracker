@@ -12,7 +12,7 @@ import com.unnati.fintrack.enums.CategoryType;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>
 {
-      List<Category> findByCategory(CategoryType type);
+      List<Category> findByCategory(CategoryType category);
       
       List<Category> findByStatus(CategoryStatus status);
 

@@ -36,7 +36,7 @@ public class Category {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private CategoryType type;
+    private CategoryType category;
 
     private String colorCode;
 

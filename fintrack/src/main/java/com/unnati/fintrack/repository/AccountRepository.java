@@ -10,7 +10,7 @@ import com.unnati.fintrack.enums.CurrencyType;
 
 public interface AccountRepository extends JpaRepository<Account, Long>
 {
-	List<Account> findbyAccountType(AccountType accountType);
+	List<Account> findByAccountType(AccountType accountType);
 
     List<Account> findByStatus(AccountStatus status);
 

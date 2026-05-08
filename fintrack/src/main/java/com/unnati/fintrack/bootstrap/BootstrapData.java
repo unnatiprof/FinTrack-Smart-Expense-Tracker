@@ -180,7 +180,7 @@ public class BootstrapData implements CommandLineRunner
 
         Category category1 = Category.builder()
                 .name("Food")
-                .type(CategoryType.EXPENSE)
+                .category(CategoryType.EXPENSE)
                 .colorCode("#FF7043")
                 .icon("restaurant")
                 .status(CategoryStatus.ACTIVE)
@@ -188,7 +188,7 @@ public class BootstrapData implements CommandLineRunner
 
         Category category2 = Category.builder()
                 .name("Travel")
-                .type(CategoryType.EXPENSE)
+                .category(CategoryType.EXPENSE)
                 .colorCode("#42A5F5")
                 .icon("directions_bus")
                 .status(CategoryStatus.ACTIVE)
@@ -196,7 +196,7 @@ public class BootstrapData implements CommandLineRunner
 
         Category category3 = Category.builder()
                 .name("Shopping")
-                .type(CategoryType.EXPENSE)
+                .category(CategoryType.EXPENSE)
                 .colorCode("#AB47BC")
                 .icon("shopping_bag")
                 .status(CategoryStatus.ACTIVE)
@@ -204,7 +204,7 @@ public class BootstrapData implements CommandLineRunner
 
         Category category4 = Category.builder()
                 .name("Education")
-                .type(CategoryType.EXPENSE)
+                .category(CategoryType.EXPENSE)
                 .colorCode("#66BB6A")
                 .icon("school")
                 .status(CategoryStatus.ACTIVE)
@@ -212,7 +212,7 @@ public class BootstrapData implements CommandLineRunner
 
         Category category5 = Category.builder()
                 .name("Hostel")
-                .type(CategoryType.EXPENSE)
+                .category(CategoryType.EXPENSE)
                 .colorCode("#FFA726")
                 .icon("home")
                 .status(CategoryStatus.ACTIVE)

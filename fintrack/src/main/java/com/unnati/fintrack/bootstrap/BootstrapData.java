@@ -3,8 +3,8 @@ package com.unnati.fintrack.bootstrap;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.CommandLineRunner; // this interface is runned automatically after starting the bootstrap app. 
+import org.springframework.stereotype.Component;// imports @Component
 
 import com.unnati.fintrack.entity.Account;
 import com.unnati.fintrack.entity.Category;
@@ -25,50 +25,58 @@ import com.unnati.fintrack.repository.CategoryRepository;
 import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.repository.UserRepository;
 
-@Component
-public class BootstrapData implements CommandLineRunner {
+@Component // this tells spring to create a component.
+public class BootstrapData implements CommandLineRunner 
+{
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepository; // stores the object of the UserRepository
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
 
-    public BootstrapData(UserRepository userRepository,
-                         AccountRepository accountRepository,
-                         CategoryRepository categoryRepository,
-                         TransactionRepository transactionRepository) {
-        this.userRepository = userRepository;
+    
+    // constructor injection 
+    public BootstrapData(UserRepository userRepository, AccountRepository accountRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository) 
+    {
+        this.userRepository = userRepository; // storing the value of the parameter into the current calling objects
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) 
+    {
 
-        if (userRepository.count() == 0) {
-            loadUsers();
+        if (userRepository.count() == 0) 
+        {
+            loadUsers(); // starts the method to load data if the object is empty
         }
 
-        if (accountRepository.count() == 0) {
+        if (accountRepository.count() == 0) 
+        {
             loadAccounts();
         }
 
-        if (categoryRepository.count() == 0) {
+        if (categoryRepository.count() == 0) 
+        {
             loadCategories();
         }
 
-        if (transactionRepository.count() == 0) {
+        if (transactionRepository.count() == 0) 
+        {
             loadTransactions();
         }
 
-        System.out.println("Users Count: " + userRepository.count());
+        System.out.println("Users Count: " + userRepository.count()); // returns the count of the  objects stored
         System.out.println("Accounts Count: " + accountRepository.count());
         System.out.println("Categories Count: " + categoryRepository.count());
         System.out.println("Transactions Count: " + transactionRepository.count());
     }
 
-    private void loadUsers() {
+    private void loadUsers() 
+    {
+    	//Entity_class_name   obj_name =  Entity_class_name.builder().parameter1("").parameter2("value").parameter3("value").build();
 
         User user1 = User.builder()
                 .name("Unnati Shri")
@@ -110,14 +118,15 @@ public class BootstrapData implements CommandLineRunner {
                 .status(UserStatus.ACTIVE)
                 .build();
 
-        userRepository.save(user1);
+        userRepository.save(user1); // RepositoryObjectname.save(EntityClassObject);  // saves the entity object data into the repository object 
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
     }
 
-    private void loadAccounts() {
+    private void loadAccounts() 
+    {
 
         Account account1 = Account.builder()
                 .accountName("Cash Wallet")
@@ -166,7 +175,8 @@ public class BootstrapData implements CommandLineRunner {
         accountRepository.save(account5);
     }
 
-    private void loadCategories() {
+    private void loadCategories() 
+    {
 
         Category category1 = Category.builder()
                 .name("Food")
@@ -215,7 +225,8 @@ public class BootstrapData implements CommandLineRunner {
         categoryRepository.save(category5);
     }
 
-    private void loadTransactions() {
+    private void loadTransactions() 
+    {
 
         Transaction transaction1 = Transaction.builder()
                 .title("College Canteen Lunch")

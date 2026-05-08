@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.unnati.fintrack.enums.AccountStatus;
 import com.unnati.fintrack.enums.AccountType;
+import com.unnati.fintrack.enums.CurrencyType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

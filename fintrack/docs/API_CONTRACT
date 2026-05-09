@@ -15,3 +15,28 @@ It explains which APIs will be available, what request data they accept, and wha
 
 ```text
 http://localhost:9090
+
+Transactions:
+GET /api/transactions
+GET /api/transactions/{id}
+POST /api/transactions
+PUT /api/transactions/{id}
+PATCH /api/transactions/{id}
+DELETE /api/transactions/{id}
+
+Accounts:
+GET /api/accounts
+POST /api/accounts
+PUT /api/accounts/{id}
+DELETE /api/accounts/{id}
+
+Categories:
+GET /api/categories
+POST /api/categories
+PUT /api/categories/{id}
+DELETE /api/categories/{id}
+
+Dashboard:
+GET /api/dashboard/summary
+GET /api/dashboard/recent-transactions
+GET /api/dashboard/category-breakdown

@@ -21,14 +21,14 @@ GET /api/transactions
 GET /api/transactions/{id}
 POST /api/transactions
 PUT /api/transactions/{id}
-PATCH /api/transactions/{id}
+PATCH /api/transactions/{id} # not working
 DELETE /api/transactions/{id}
 
 Accounts:
 GET /api/accounts
-POST /api/accounts
+POST /api/accounts # not working
 PUT /api/accounts/{id}
-DELETE /api/accounts/{id}
+DELETE /api/accounts/{id} # done
 
 Categories:
 GET /api/categories
@@ -38,5 +38,5 @@ DELETE /api/categories/{id}
 
 Dashboard:
 GET /api/dashboard/summary
-GET /api/dashboard/recent-transactions
-GET /api/dashboard/category-breakdown
+GET /api/dashboard/recent-transactions # not working
+GET /api/dashboard/category-breakdown  # not working

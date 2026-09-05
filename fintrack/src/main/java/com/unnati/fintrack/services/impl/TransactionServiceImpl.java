@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Transaction;
+import com.unnati.fintrack.exception.ResourseNotFoundException;
 import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.services.TransactionService;
 
@@ -24,8 +25,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction findById(Long id) {
+
         return transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourseNotFoundException(
+                                "Transaction not found with id: " + id
+                        ));
     }
 
     @Override
@@ -35,6 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction update(Long id, Transaction transaction) {
+
         Transaction existingTransaction = findById(id);
 
         existingTransaction.setTitle(transaction.getTitle());
@@ -53,7 +59,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void deleteById(Long id) {
+
         Transaction existingTransaction = findById(id);
+
         transactionRepository.delete(existingTransaction);
     }
 }

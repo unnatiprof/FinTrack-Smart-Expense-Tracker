@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Account;
+import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.AccountRepository;
 import com.unnati.fintrack.services.AccountService;
 
@@ -24,8 +25,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findById(Long id) {
+
         return accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Account not found with id: " + id
+                        ));
     }
 
     @Override
@@ -35,6 +40,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account update(Long id, Account account) {
+
         Account existingAccount = findById(id);
 
         existingAccount.setAccountName(account.getAccountName());
@@ -48,7 +54,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deleteById(Long id) {
+
         Account existingAccount = findById(id);
+
         accountRepository.delete(existingAccount);
     }
 }

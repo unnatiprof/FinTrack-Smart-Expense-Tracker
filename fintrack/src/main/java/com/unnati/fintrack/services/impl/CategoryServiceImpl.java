@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Category;
+import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.CategoryRepository;
 import com.unnati.fintrack.services.CategoryService;
 
@@ -24,8 +25,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Long id) {
+
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Category not found with id: " + id
+                        ));
     }
 
     @Override
@@ -35,6 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category update(Long id, Category category) {
+
         Category existingCategory = findById(id);
 
         existingCategory.setName(category.getName());
@@ -48,7 +54,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(Long id) {
+
         Category existingCategory = findById(id);
+
         categoryRepository.delete(existingCategory);
     }
 }

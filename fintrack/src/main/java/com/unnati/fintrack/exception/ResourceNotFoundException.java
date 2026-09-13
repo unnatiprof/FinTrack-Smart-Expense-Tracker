@@ -1,8 +1,13 @@
 package com.unnati.fintrack.exception;
 
-public class ResourseNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
 
-    public ResourseNotFoundException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ResourceNotFoundException(String message) {
         super(message);
     }
 }

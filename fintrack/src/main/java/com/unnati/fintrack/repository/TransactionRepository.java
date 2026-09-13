@@ -20,9 +20,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByPaymentMode(PaymentMode paymentMode);
 
-    List<Transaction> findByTransactionStatus(TransactionStatus transactionStatus);
+    List<Transaction> findByTransactionStatus(
+            TransactionStatus transactionStatus
+    );
 
-    List<Transaction> findByTransactionDate(LocalDate transactionDate);
+    List<Transaction> findByTransactionDate(
+            LocalDate transactionDate
+    );
 
-    List<Transaction> findByTransactionDateBetween(LocalDate startDate, LocalDate endDate);
+    List<Transaction> findByTransactionDateBetween(
+            LocalDate startDate,
+            LocalDate endDate
+    );
 }

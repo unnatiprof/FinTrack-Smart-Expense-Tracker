@@ -2,10 +2,12 @@ package com.unnati.fintrack.services.impl;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Transaction;
-import com.unnati.fintrack.exception.ResourseNotFoundException;
+import com.unnati.fintrack.events.TransactionCreatedEvent;
+import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.services.TransactionService;
 
@@ -14,8 +16,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public TransactionServiceImpl(
+            TransactionRepository transactionRepository,
+            ApplicationEventPublisher eventPublisher) {
+
         this.transactionRepository = transactionRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -28,14 +36,28 @@ public class TransactionServiceImpl implements TransactionService {
 
         return transactionRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourseNotFoundException(
+                        new ResourceNotFoundException(
                                 "Transaction not found with id: " + id
                         ));
     }
 
     @Override
     public Transaction save(Transaction transaction) {
-        return transactionRepository.save(transaction);
+
+        Transaction savedTransaction =
+                transactionRepository.save(transaction);
+
+        eventPublisher.publishEvent(
+                new TransactionCreatedEvent(
+                        savedTransaction.getId(),
+                        savedTransaction.getTitle(),
+                        savedTransaction.getAmount(),
+                        savedTransaction.getType(),
+                        savedTransaction.getCategory()
+                )
+        );
+
+        return savedTransaction;
     }
 
     @Override

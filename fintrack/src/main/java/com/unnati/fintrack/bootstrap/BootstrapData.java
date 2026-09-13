@@ -2,81 +2,117 @@ package com.unnati.fintrack.bootstrap;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-import org.springframework.boot.CommandLineRunner; // this interface is runned automatically after starting the bootstrap app. 
-import org.springframework.stereotype.Component;// imports @Component
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import com.unnati.fintrack.entity.Account;
+import com.unnati.fintrack.entity.Budget;
 import com.unnati.fintrack.entity.Category;
+import com.unnati.fintrack.entity.Goal;
+import com.unnati.fintrack.entity.Notification;
 import com.unnati.fintrack.entity.Transaction;
 import com.unnati.fintrack.entity.User;
+
 import com.unnati.fintrack.enums.AccountStatus;
 import com.unnati.fintrack.enums.AccountType;
+import com.unnati.fintrack.enums.BudgetStatus;
 import com.unnati.fintrack.enums.CategoryStatus;
 import com.unnati.fintrack.enums.CategoryType;
 import com.unnati.fintrack.enums.CurrencyType;
+import com.unnati.fintrack.enums.GoalPriority;
+import com.unnati.fintrack.enums.GoalStatus;
+import com.unnati.fintrack.enums.NotificationStatus;
+import com.unnati.fintrack.enums.NotificationType;
 import com.unnati.fintrack.enums.PaymentMode;
 import com.unnati.fintrack.enums.TransactionStatus;
 import com.unnati.fintrack.enums.TransactionType;
 import com.unnati.fintrack.enums.UserRole;
 import com.unnati.fintrack.enums.UserStatus;
+
 import com.unnati.fintrack.repository.AccountRepository;
+import com.unnati.fintrack.repository.BudgetRepository;
 import com.unnati.fintrack.repository.CategoryRepository;
+import com.unnati.fintrack.repository.GoalRepository;
+import com.unnati.fintrack.repository.NotificationRepository;
 import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.repository.UserRepository;
 
-@Component // this tells spring to create a component.
-public class BootstrapData implements CommandLineRunner 
-{
+@Component
+public class BootstrapData implements CommandLineRunner {
 
-    private final UserRepository userRepository; // stores the object of the UserRepository
+    private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
+    private final BudgetRepository budgetRepository;
+    private final GoalRepository goalRepository;
+    private final NotificationRepository notificationRepository;
 
-    
-    // constructor injection 
-    public BootstrapData(UserRepository userRepository, AccountRepository accountRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository) 
-    {
-        this.userRepository = userRepository; // storing the value of the parameter into the current calling objects
+    public BootstrapData(
+            UserRepository userRepository,
+            AccountRepository accountRepository,
+            CategoryRepository categoryRepository,
+            TransactionRepository transactionRepository,
+            BudgetRepository budgetRepository,
+            GoalRepository goalRepository,
+            NotificationRepository notificationRepository) {
+
+        this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
+        this.budgetRepository = budgetRepository;
+        this.goalRepository = goalRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
-    public void run(String... args) 
-    {
+    public void run(String... args) {
 
-        if (userRepository.count() == 0) 
-        {
-            loadUsers(); // starts the method to load data if the object is empty
+        if (userRepository.count() == 0) {
+            loadUsers();
         }
 
-        if (accountRepository.count() == 0) 
-        {
+        if (accountRepository.count() == 0) {
             loadAccounts();
         }
 
-        if (categoryRepository.count() == 0) 
-        {
+        if (categoryRepository.count() == 0) {
             loadCategories();
         }
 
-        if (transactionRepository.count() == 0) 
-        {
+        if (transactionRepository.count() == 0) {
             loadTransactions();
         }
 
-        System.out.println("Users Count: " + userRepository.count()); // returns the count of the  objects stored
+        if (budgetRepository.count() == 0) {
+            loadBudgets();
+        }
+
+        if (goalRepository.count() == 0) {
+            loadGoals();
+        }
+
+        if (notificationRepository.count() == 0) {
+            loadNotifications();
+        }
+
+        System.out.println("Users Count: " + userRepository.count());
         System.out.println("Accounts Count: " + accountRepository.count());
         System.out.println("Categories Count: " + categoryRepository.count());
         System.out.println("Transactions Count: " + transactionRepository.count());
+        System.out.println("Budgets Count: " + budgetRepository.count());
+        System.out.println("Goals Count: " + goalRepository.count());
+        System.out.println("Notifications Count: " + notificationRepository.count());
     }
 
-    private void loadUsers() 
-    {
-    	//Entity_class_name   obj_name =  Entity_class_name.builder().parameter1("").parameter2("value").parameter3("value").build();
+    // ---------------------------------------------------------
+    // USERS
+    // ---------------------------------------------------------
+
+    private void loadUsers() {
 
         User user1 = User.builder()
                 .name("Unnati Shri")
@@ -118,15 +154,18 @@ public class BootstrapData implements CommandLineRunner
                 .status(UserStatus.ACTIVE)
                 .build();
 
-        userRepository.save(user1); // RepositoryObjectname.save(EntityClassObject);  // saves the entity object data into the repository object 
+        userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
     }
 
-    private void loadAccounts() 
-    {
+    // ---------------------------------------------------------
+    // ACCOUNTS
+    // ---------------------------------------------------------
+
+    private void loadAccounts() {
 
         Account account1 = Account.builder()
                 .accountName("Cash Wallet")
@@ -175,8 +214,11 @@ public class BootstrapData implements CommandLineRunner
         accountRepository.save(account5);
     }
 
-    private void loadCategories() 
-    {
+    // ---------------------------------------------------------
+    // CATEGORIES
+    // ---------------------------------------------------------
+
+    private void loadCategories() {
 
         Category category1 = Category.builder()
                 .name("Food")
@@ -225,8 +267,11 @@ public class BootstrapData implements CommandLineRunner
         categoryRepository.save(category5);
     }
 
-    private void loadTransactions() 
-    {
+    // ---------------------------------------------------------
+    // TRANSACTIONS
+    // ---------------------------------------------------------
+
+    private void loadTransactions() {
 
         Transaction transaction1 = Transaction.builder()
                 .title("College Canteen Lunch")
@@ -298,5 +343,202 @@ public class BootstrapData implements CommandLineRunner
         transactionRepository.save(transaction3);
         transactionRepository.save(transaction4);
         transactionRepository.save(transaction5);
+    }
+
+    // ---------------------------------------------------------
+    // BUDGETS
+    // ---------------------------------------------------------
+
+    private void loadBudgets() {
+
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        Budget budget1 = Budget.builder()
+                .budgetName("Food")
+                .category("Food")
+                .month(startDate.getMonthValue())
+                .year(startDate.getYear())
+                .limitAmount(new BigDecimal("15000.00"))
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(BudgetStatus.INACTIVE)
+                .build();
+
+        Budget budget2 = Budget.builder()
+                .budgetName("Shopping")
+                .category("Shopping")
+                .month(startDate.getMonthValue())
+                .year(startDate.getYear())
+                .limitAmount(new BigDecimal("25000.00"))
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(BudgetStatus.COMPLETED)
+                .build();
+
+        Budget budget3 = Budget.builder()
+                .budgetName("Travel")
+                .category("Travel")
+                .month(startDate.getMonthValue())
+                .year(startDate.getYear())
+                .limitAmount(new BigDecimal("20000.00"))
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(BudgetStatus.EXCEEDED)
+                .build();
+
+        Budget budget4 = Budget.builder()
+                .budgetName("Utilities")
+                .category("Utilities")
+                .month(startDate.getMonthValue())
+                .year(startDate.getYear())
+                .limitAmount(new BigDecimal("10000.00"))
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(BudgetStatus.COMPLETED)
+                .build();
+
+        Budget budget5 = Budget.builder()
+                .budgetName("Education")
+                .category("Education")
+                .month(startDate.getMonthValue())
+                .year(startDate.getYear())
+                .limitAmount(new BigDecimal("12000.00"))
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(BudgetStatus.COMPLETED)
+                .build();
+
+        budgetRepository.save(budget1);
+        budgetRepository.save(budget2);
+        budgetRepository.save(budget3);
+        budgetRepository.save(budget4);
+        budgetRepository.save(budget5);
+    }
+
+    // ---------------------------------------------------------
+    // GOALS
+    // ---------------------------------------------------------
+
+    private void loadGoals() {
+
+        Goal goal1 = Goal.builder()
+                .goalName("Laptop Fund")
+                .targetAmount(new BigDecimal("80000.00"))
+                .savedAmount(new BigDecimal("53000.00"))
+                .deadline(LocalDate.of(2025, 6, 30))
+                .icon("laptop")
+                .priority(GoalPriority.HIGH)
+                .status(GoalStatus.IN_PROGRESS)
+                .build();
+
+        Goal goal2 = Goal.builder()
+                .goalName("Europe Trip")
+                .targetAmount(new BigDecimal("800000.00"))
+                .savedAmount(new BigDecimal("320000.00"))
+                .deadline(LocalDate.of(2025, 12, 15))
+                .icon("flight")
+                .priority(GoalPriority.MEDIUM)
+                .status(GoalStatus.IN_PROGRESS)
+                .build();
+
+        Goal goal3 = Goal.builder()
+                .goalName("Emergency Fund")
+                .targetAmount(new BigDecimal("500000.00"))
+                .savedAmount(new BigDecimal("450000.00"))
+                .deadline(LocalDate.of(2025, 12, 31))
+                .icon("security")
+                .priority(GoalPriority.HIGH)
+                .status(GoalStatus.IN_PROGRESS)
+                .build();
+
+        Goal goal4 = Goal.builder()
+                .goalName("Home Down Payment")
+                .targetAmount(new BigDecimal("3500000.00"))
+                .savedAmount(new BigDecimal("640000.00"))
+                .deadline(LocalDate.of(2027, 12, 31))
+                .icon("home")
+                .priority(GoalPriority.LOW)
+                .status(GoalStatus.IN_PROGRESS)
+                .build();
+
+        goalRepository.save(goal1);
+        goalRepository.save(goal2);
+        goalRepository.save(goal3);
+        goalRepository.save(goal4);
+    }
+
+    // ---------------------------------------------------------
+    // NOTIFICATIONS
+    // ---------------------------------------------------------
+
+    private void loadNotifications() {
+
+        Notification notification1 = Notification.builder()
+                .title("Budget Limit Warning")
+                .message("You have used 89% of your Shopping budget.")
+                .type(NotificationType.BUDGET)
+                .status(NotificationStatus.UNREAD)
+                .createdAt(LocalDateTime.now().minusHours(2))
+                .actionLabel("Review Budget")
+                .actionUrl("/api/budgets/2")
+                .build();
+
+        Notification notification2 = Notification.builder()
+                .title("Budget Exceeded")
+                .message("Your Travel budget has exceeded its limit.")
+                .type(NotificationType.BUDGET)
+                .status(NotificationStatus.UNREAD)
+                .createdAt(LocalDateTime.now().minusHours(5))
+                .actionLabel("Review Budget")
+                .actionUrl("/api/budgets/3")
+                .build();
+
+        Notification notification3 = Notification.builder()
+                .title("Goal Progress Update")
+                .message("Your Emergency Fund is 90% complete. Keep going!")
+                .type(NotificationType.GOAL)
+                .status(NotificationStatus.UNREAD)
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .actionLabel("View Goal")
+                .actionUrl("/api/goals/3")
+                .build();
+
+        Notification notification4 = Notification.builder()
+                .title("New Login Detected")
+                .message("A new login to your FinTrack account was detected.")
+                .type(NotificationType.SECURITY)
+                .status(NotificationStatus.READ)
+                .createdAt(LocalDateTime.now().minusDays(1).minusHours(3))
+                .actionLabel("Review Security")
+                .actionUrl("/api/users/profile")
+                .build();
+
+        Notification notification5 = Notification.builder()
+                .title("Monthly Report Ready")
+                .message("Your latest monthly spending report is ready to review.")
+                .type(NotificationType.SYSTEM)
+                .status(NotificationStatus.READ)
+                .createdAt(LocalDateTime.now().minusDays(2))
+                .actionLabel("View Report")
+                .actionUrl("/api/reports")
+                .build();
+
+        Notification notification6 = Notification.builder()
+                .title("Budget Reminder")
+                .message("You are approaching the limit of your Food budget.")
+                .type(NotificationType.BUDGET)
+                .status(NotificationStatus.UNREAD)
+                .createdAt(LocalDateTime.now().minusDays(2).minusHours(4))
+                .actionLabel("Review Budget")
+                .actionUrl("/api/budgets/1")
+                .build();
+
+        notificationRepository.save(notification1);
+        notificationRepository.save(notification2);
+        notificationRepository.save(notification3);
+        notificationRepository.save(notification4);
+        notificationRepository.save(notification5);
+        notificationRepository.save(notification6);
     }
 }

@@ -7,6 +7,7 @@ FinTrack - Smart Expense Tracker
 ## Purpose
 
 This document defines the REST API contract for the FinTrack backend.  
+
 It explains which APIs will be available, what request data they accept, and what response data they return.
 
 ---
@@ -14,29 +15,95 @@ It explains which APIs will be available, what request data they accept, and wha
 # Base URL
 
 ```text
+
 http://localhost:9090
 
 Transactions:
+
 GET /api/transactions
+
 GET /api/transactions/{id}
+
 POST /api/transactions
+
 PUT /api/transactions/{id}
+
 PATCH /api/transactions/{id} # not working
+
 DELETE /api/transactions/{id}
 
 Accounts:
+
 GET /api/accounts
+
 POST /api/accounts # not working
+
 PUT /api/accounts/{id}
+
 DELETE /api/accounts/{id} # done
 
 Categories:
+
 GET /api/categories
+
 POST /api/categories
+
 PUT /api/categories/{id}
+
 DELETE /api/categories/{id}
 
 Dashboard:
+
 GET /api/dashboard/summary
+
 GET /api/dashboard/recent-transactions # not working
-GET /api/dashboard/category-breakdown  # not working
+
+GET /api/dashboard/category-breakdown # not working
+
+Budgets:
+
+GET /api/budgets # working
+
+GET /api/budgets/{id} # working
+
+POST /api/budgets # working
+
+PUT /api/budgets/{id} # working
+
+DELETE /api/budgets/{id} # working
+
+GET /api/budgets/category/{category} # working
+
+GET /api/budgets/month/{month} # working
+
+GET /api/budgets/year/{year} # working
+
+GET /api/budgets/period?month=5&year=2025 # working
+
+GET /api/budgets/status/{status} # working
+
+GET /api/budgets/date-range?startDate=2025-05-01&endDate=2025-05-31 # working
+
+Goals:
+
+GET /api/goals # working
+
+GET /api/goals/{id} # working
+
+POST /api/goals # working
+
+PUT /api/goals/{id} # working
+
+DELETE /api/goals/{id} # working
+
+GET /api/goals/priority/{priority} # working
+
+GET /api/goals/status/{status} # working
+
+GET /api/goals/deadline/{deadline} # working
+
+GET /api/goals/date-range?startDate=2025-01-01&endDate=2025-12-31 # working
+
+GET /api/goals/name/{goalName} # working
+
+GET /api/goals/deadline-before?deadline=2026-01-01 # working

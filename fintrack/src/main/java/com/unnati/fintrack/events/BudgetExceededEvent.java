@@ -10,6 +10,14 @@ import lombok.Getter;
 public class BudgetExceededEvent {
 
     private Long budgetId;
+
     private String budgetName;
+
     private BigDecimal limitAmount;
+
+    private Long userId;
+
+    private String userName;
+
+    private String userEmail;
 }

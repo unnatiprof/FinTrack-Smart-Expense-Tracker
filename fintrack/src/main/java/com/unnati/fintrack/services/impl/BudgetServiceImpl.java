@@ -4,14 +4,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Budget;
+import com.unnati.fintrack.entity.User;
 import com.unnati.fintrack.enums.BudgetStatus;
 import com.unnati.fintrack.events.BudgetExceededEvent;
 import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.BudgetRepository;
 import com.unnati.fintrack.services.BudgetService;
+import com.unnati.fintrack.services.UserService;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
@@ -20,21 +24,27 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private final UserService userService;
+
     public BudgetServiceImpl(
             BudgetRepository budgetRepository,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher,
+            UserService userService) {
 
         this.budgetRepository = budgetRepository;
         this.eventPublisher = eventPublisher;
+        this.userService = userService;
     }
 
     @Override
     public List<Budget> findAll() {
+
         return budgetRepository.findAll();
     }
 
     @Override
     public Budget findById(Long id) {
+
         return budgetRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -50,11 +60,27 @@ public class BudgetServiceImpl implements BudgetService {
 
         if (savedBudget.getStatus() == BudgetStatus.EXCEEDED) {
 
+            Authentication authentication =
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication();
+
+            String email = authentication.getName();
+
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "User not found with email: " + email
+                            ));
+
             eventPublisher.publishEvent(
                     new BudgetExceededEvent(
                             savedBudget.getId(),
                             savedBudget.getBudgetName(),
-                            savedBudget.getLimitAmount()
+                            savedBudget.getLimitAmount(),
+                            user.getId(),
+                            user.getName(),
+                            user.getEmail()
                     )
             );
         }
@@ -81,11 +107,27 @@ public class BudgetServiceImpl implements BudgetService {
 
         if (updatedBudget.getStatus() == BudgetStatus.EXCEEDED) {
 
+            Authentication authentication =
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication();
+
+            String email = authentication.getName();
+
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "User not found with email: " + email
+                            ));
+
             eventPublisher.publishEvent(
                     new BudgetExceededEvent(
                             updatedBudget.getId(),
                             updatedBudget.getBudgetName(),
-                            updatedBudget.getLimitAmount()
+                            updatedBudget.getLimitAmount(),
+                            user.getId(),
+                            user.getName(),
+                            user.getEmail()
                     )
             );
         }
@@ -103,16 +145,19 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public List<Budget> findByCategory(String category) {
+
         return budgetRepository.findByCategory(category);
     }
 
     @Override
     public List<Budget> findByMonth(Integer month) {
+
         return budgetRepository.findByMonth(month);
     }
 
     @Override
     public List<Budget> findByYear(Integer year) {
+
         return budgetRepository.findByYear(year);
     }
 
@@ -126,6 +171,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public List<Budget> findByStatus(BudgetStatus status) {
+
         return budgetRepository.findByStatus(status);
     }
 

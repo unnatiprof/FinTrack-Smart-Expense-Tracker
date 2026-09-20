@@ -20,4 +20,10 @@ public class TransactionCreatedEvent {
     private TransactionType type;
 
     private String category;
+
+    private Long userId;
+
+    private String userName;
+
+    private String userEmail;
 }

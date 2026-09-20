@@ -1,5 +1,6 @@
 package com.unnati.fintrack.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.unnati.fintrack.enums.UserRole;
@@ -15,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +42,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String currency;
+
+    private BigDecimal monthlyIncome;
+
+    private LocalDateTime lastLogin;
+
     @Column(nullable = false)
     private String password;
 
@@ -55,6 +63,7 @@ public class User {
 
     @PrePersist
     public void beforeSave() {
+
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
 

@@ -3,13 +3,17 @@ package com.unnati.fintrack.services.impl;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Transaction;
+import com.unnati.fintrack.entity.User;
 import com.unnati.fintrack.events.TransactionCreatedEvent;
 import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.services.TransactionService;
+import com.unnati.fintrack.services.UserService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -18,16 +22,21 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private final UserService userService;
+
     public TransactionServiceImpl(
             TransactionRepository transactionRepository,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher,
+            UserService userService) {
 
         this.transactionRepository = transactionRepository;
         this.eventPublisher = eventPublisher;
+        this.userService = userService;
     }
 
     @Override
     public List<Transaction> findAll() {
+
         return transactionRepository.findAll();
     }
 
@@ -47,13 +56,29 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction savedTransaction =
                 transactionRepository.save(transaction);
 
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with email: " + email
+                        ));
+
         eventPublisher.publishEvent(
                 new TransactionCreatedEvent(
                         savedTransaction.getId(),
                         savedTransaction.getTitle(),
                         savedTransaction.getAmount(),
                         savedTransaction.getType(),
-                        savedTransaction.getCategory()
+                        savedTransaction.getCategory(),
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail()
                 )
         );
 

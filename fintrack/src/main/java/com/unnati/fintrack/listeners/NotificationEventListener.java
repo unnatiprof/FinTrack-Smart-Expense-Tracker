@@ -1,3 +1,4 @@
+
 package com.unnati.fintrack.listeners;
 
 import org.springframework.context.event.EventListener;
@@ -29,62 +30,75 @@ public class NotificationEventListener {
         this.auditLogService = auditLogService;
     }
 
+    // TRANSACTION CREATED: Notification + AuditLog
     @EventListener
     public void handleTransactionCreated(TransactionCreatedEvent event) {
 
         Notification notification = Notification.builder()
-            .title("Transaction Added")
-            .message(event.getType() + " transaction of ₹" + event.getAmount() + " was added successfully.")
-            .type(NotificationType.SYSTEM)
-            .status(NotificationStatus.UNREAD)
-            .actionLabel("View Transaction")
-            .actionUrl("/api/transactions/" + event.getTransactionId())
-            .build();
+                .title("Transaction Added")
+                .message(
+                        event.getType() + " transaction of ₹"
+                                + event.getAmount()
+                                + " was added successfully.")
+                .type(NotificationType.SYSTEM)
+                .status(NotificationStatus.UNREAD)
+                .actionLabel("View Transaction")
+                .actionUrl("/api/transactions/" + event.getTransactionId())
+                .build();
 
         notificationService.save(notification);
 
         AuditLog auditLog = AuditLog.builder()
-            .userId(event.getUserId())
-            .userName(event.getUserName())
-            .userEmail(event.getUserEmail())
-            .action("TRANSACTION_CREATED")
-            .description(
-                "Transaction created: "
-                + event.getTitle()
-                + " of ₹"
-                + event.getAmount()
-            )
-            .build();
+                .userId(event.getUserId())
+                .userName(event.getUserName())
+                .userEmail(event.getUserEmail())
+                .action("TRANSACTION_CREATED")
+                .description(
+                        "Transaction created: "
+                                + event.getTitle()
+                                + " of ₹"
+                                + event.getAmount())
+                .build();
 
         auditLogService.save(auditLog);
     }
 
+    // BUDGET EXCEEDED: Notification + AuditLog
     @EventListener
-    public void handleBudgetExceeded(
-            BudgetExceededEvent event) {
+    public void handleBudgetExceeded(BudgetExceededEvent event) {
 
         Notification notification = Notification.builder()
                 .title("Budget Exceeded")
                 .message(
-                        "Your "
-                                + event.getBudgetName()
+                        "Your " + event.getBudgetName()
                                 + " budget has exceeded its limit of ₹"
-                                + event.getLimitAmount()
-                                + ".")
+                                + event.getLimitAmount() + ".")
                 .type(NotificationType.BUDGET)
                 .status(NotificationStatus.UNREAD)
                 .actionLabel("Review Budget")
-                .actionUrl(
-                        "/api/budgets/"
-                                + event.getBudgetId())
+                .actionUrl("/api/budgets/" + event.getBudgetId())
                 .build();
 
         notificationService.save(notification);
+
+        AuditLog auditLog = AuditLog.builder()
+                .userId(event.getUserId())
+                .userName(event.getUserName())
+                .userEmail(event.getUserEmail())
+                .action("BUDGET_EXCEEDED")
+                .description(
+                        "Budget exceeded: "
+                                + event.getBudgetName()
+                                + " with limit of ₹"
+                                + event.getLimitAmount())
+                .build();
+
+        auditLogService.save(auditLog);
     }
 
+    // GOAL COMPLETED: Notification + AuditLog
     @EventListener
-    public void handleGoalCompleted(
-            GoalCompletedEvent event) {
+    public void handleGoalCompleted(GoalCompletedEvent event) {
 
         Notification notification = Notification.builder()
                 .title("Goal Completed")
@@ -92,41 +106,47 @@ public class NotificationEventListener {
                         "Congratulations! You have completed your "
                                 + event.getGoalName()
                                 + " goal of ₹"
-                                + event.getTargetAmount()
-                                + ".")
+                                + event.getTargetAmount() + ".")
                 .type(NotificationType.GOAL)
                 .status(NotificationStatus.UNREAD)
                 .actionLabel("View Goal")
-                .actionUrl(
-                        "/api/goals/"
-                                + event.getGoalId())
+                .actionUrl("/api/goals/" + event.getGoalId())
                 .build();
 
         notificationService.save(notification);
+
+        AuditLog auditLog = AuditLog.builder()
+                .userId(event.getUserId())
+                .userName(event.getUserName())
+                .userEmail(event.getUserEmail())
+                .action("GOAL_COMPLETED")
+                .description(
+                        "Goal completed: "
+                                + event.getGoalName()
+                                + " with target amount of ₹"
+                                + event.getTargetAmount())
+                .build();
+
+        auditLogService.save(auditLog);
     }
 
+    // USER REGISTERED: Notification + AuditLog
     @EventListener
-    public void handleUserRegistered(
-            UserRegisteredEvent event) {
+    public void handleUserRegistered(UserRegisteredEvent event) {
 
-        // Create notification
         Notification notification = Notification.builder()
                 .title("Welcome to FinTrack")
                 .message(
-                        "Welcome "
-                                + event.getName()
+                        "Welcome " + event.getName()
                                 + "! Your FinTrack account has been created successfully.")
                 .type(NotificationType.SYSTEM)
                 .status(NotificationStatus.UNREAD)
                 .actionLabel("View Profile")
-                .actionUrl(
-                        "/api/users/"
-                                + event.getUserId())
+                .actionUrl("/api/users/" + event.getUserId())
                 .build();
 
         notificationService.save(notification);
 
-        // Create audit log
         AuditLog auditLog = AuditLog.builder()
                 .userId(event.getUserId())
                 .userName(event.getName())
@@ -138,9 +158,22 @@ public class NotificationEventListener {
         auditLogService.save(auditLog);
     }
 
+    // USER LOGIN: Notification + AuditLog
     @EventListener
-    public void handleUserLoggedIn(
-            UserLoggedInEvent event) {
+    public void handleUserLoggedIn(UserLoggedInEvent event) {
+
+        Notification notification = Notification.builder()
+                .title("Login Successful")
+                .message(
+                        "Welcome back, " + event.getName()
+                                + "! You logged into FinTrack successfully.")
+                .type(NotificationType.SECURITY)
+                .status(NotificationStatus.UNREAD)
+                .actionLabel("View Profile")
+                .actionUrl("/api/users/profile")
+                .build();
+
+        notificationService.save(notification);
 
         AuditLog auditLog = AuditLog.builder()
                 .userId(event.getUserId())

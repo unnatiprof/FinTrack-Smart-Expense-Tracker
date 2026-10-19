@@ -16,4 +16,10 @@ public class GoalCompletedEvent {
     private BigDecimal targetAmount;
 
     private BigDecimal savedAmount;
+
+    private Long userId;
+
+    private String userName;
+
+    private String userEmail;
 }

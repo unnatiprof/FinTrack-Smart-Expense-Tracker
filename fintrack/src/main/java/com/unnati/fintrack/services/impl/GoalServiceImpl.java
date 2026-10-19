@@ -1,83 +1,66 @@
+
 package com.unnati.fintrack.services.impl;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.unnati.fintrack.entity.Goal;
+import com.unnati.fintrack.entity.User;
 import com.unnati.fintrack.enums.GoalPriority;
 import com.unnati.fintrack.enums.GoalStatus;
 import com.unnati.fintrack.events.GoalCompletedEvent;
 import com.unnati.fintrack.exception.ResourceNotFoundException;
 import com.unnati.fintrack.repository.GoalRepository;
 import com.unnati.fintrack.services.GoalService;
+import com.unnati.fintrack.services.UserService;
 
 @Service
 public class GoalServiceImpl implements GoalService {
 
     private final GoalRepository goalRepository;
-
     private final ApplicationEventPublisher eventPublisher;
+    private final UserService userService;
 
     public GoalServiceImpl(
             GoalRepository goalRepository,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher,
+            UserService userService) {
 
         this.goalRepository = goalRepository;
         this.eventPublisher = eventPublisher;
+        this.userService = userService;
     }
 
-    // =========================================================
-    // GET ALL GOALS
-    // =========================================================
     @Override
     public List<Goal> findAll() {
         return goalRepository.findAll();
     }
 
-    // =========================================================
-    // GET GOAL BY ID
-    // =========================================================
     @Override
     public Goal findById(Long id) {
-
         return goalRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Goal not found with id: " + id
-                        )
-                );
+                                "Goal not found with id: " + id));
     }
 
-    // =========================================================
-    // CREATE GOAL
-    // =========================================================
     @Override
     public Goal save(Goal goal) {
 
-        Goal savedGoal =
-                goalRepository.save(goal);
+        Goal savedGoal = goalRepository.save(goal);
 
         if (savedGoal.getStatus() == GoalStatus.COMPLETED) {
-
-            eventPublisher.publishEvent(
-                    new GoalCompletedEvent(
-                            savedGoal.getId(),
-                            savedGoal.getGoalName(),
-                            savedGoal.getTargetAmount(),
-                            savedGoal.getSavedAmount()
-                    )
-            );
+            publishGoalCompletedEvent(savedGoal);
         }
 
         return savedGoal;
     }
 
-    // =========================================================
-    // UPDATE GOAL
-    // =========================================================
     @Override
     public Goal update(Long id, Goal goal) {
 
@@ -91,85 +74,80 @@ public class GoalServiceImpl implements GoalService {
         existingGoal.setPriority(goal.getPriority());
         existingGoal.setStatus(goal.getStatus());
 
-        Goal updatedGoal =
-                goalRepository.save(existingGoal);
+        Goal updatedGoal = goalRepository.save(existingGoal);
 
         if (updatedGoal.getStatus() == GoalStatus.COMPLETED) {
-
-            eventPublisher.publishEvent(
-                    new GoalCompletedEvent(
-                            updatedGoal.getId(),
-                            updatedGoal.getGoalName(),
-                            updatedGoal.getTargetAmount(),
-                            updatedGoal.getSavedAmount()
-                    )
-            );
+            publishGoalCompletedEvent(updatedGoal);
         }
 
         return updatedGoal;
     }
 
-    // =========================================================
-    // DELETE GOAL
-    // =========================================================
+    private void publishGoalCompletedEvent(Goal goal) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new IllegalStateException(
+                    "Authenticated user is required to complete a goal event");
+        }
+
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with email: " + email));
+
+        eventPublisher.publishEvent(
+                new GoalCompletedEvent(
+                        goal.getId(),
+                        goal.getGoalName(),
+                        goal.getTargetAmount(),
+                        goal.getSavedAmount(),
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail()
+                )
+        );
+    }
+
     @Override
     public void deleteById(Long id) {
-
         Goal existingGoal = findById(id);
-
         goalRepository.delete(existingGoal);
     }
 
-    // =========================================================
-    // GET GOALS BY PRIORITY
-    // =========================================================
     @Override
     public List<Goal> findByPriority(GoalPriority priority) {
         return goalRepository.findByPriority(priority);
     }
 
-    // =========================================================
-    // GET GOALS BY STATUS
-    // =========================================================
     @Override
     public List<Goal> findByStatus(GoalStatus status) {
         return goalRepository.findByStatus(status);
     }
 
-    // =========================================================
-    // GET GOALS BY EXACT DEADLINE
-    // =========================================================
     @Override
     public List<Goal> findByDeadline(LocalDate deadline) {
         return goalRepository.findByDeadline(deadline);
     }
 
-    // =========================================================
-    // GET GOALS BY DEADLINE RANGE
-    // =========================================================
     @Override
     public List<Goal> findByDeadlineBetween(
             LocalDate startDate,
             LocalDate endDate) {
-
-        return goalRepository.findByDeadlineBetween(
-                startDate,
-                endDate
-        );
+        return goalRepository.findByDeadlineBetween(startDate, endDate);
     }
 
-    // =========================================================
-    // GET GOALS BEFORE DEADLINE
-    // =========================================================
     @Override
     public List<Goal> findByDeadlineBefore(LocalDate deadline) {
-
         return goalRepository.findByDeadlineBefore(deadline);
     }
 
-    // =========================================================
-    // GET GOALS BY NAME
-    // =========================================================
     @Override
     public List<Goal> findByGoalName(String goalName) {
         return goalRepository.findByGoalName(goalName);

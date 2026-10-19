@@ -1,3 +1,4 @@
+
 package com.unnati.fintrack.security;
 
 import java.io.IOException;
@@ -29,6 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // CORS preflight requests must not require a JWT.
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -47,8 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String email = jwtService.extractEmail(token);
 
-            if (email != null &&
-                    SecurityContextHolder.getContext()
+            if (email != null
+                    && SecurityContextHolder.getContext()
                             .getAuthentication() == null) {
 
                 UserDetails userDetails =
@@ -72,7 +79,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // Invalid JWT - request will continue without authentication
+            // Invalid JWT remains unauthenticated.
+            // Protected endpoints will be rejected by Spring Security.
         }
 
         filterChain.doFilter(request, response);

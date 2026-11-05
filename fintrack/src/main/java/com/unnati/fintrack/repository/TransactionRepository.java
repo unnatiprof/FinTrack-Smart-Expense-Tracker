@@ -9,6 +9,7 @@ import com.unnati.fintrack.entity.Transaction;
 import com.unnati.fintrack.enums.PaymentMode;
 import com.unnati.fintrack.enums.TransactionStatus;
 import com.unnati.fintrack.enums.TransactionType;
+import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
@@ -32,4 +33,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             LocalDate startDate,
             LocalDate endDate
     );
+    
+    List<Transaction> findByUser_Email(String email);
+
+    Optional<Transaction> findByIdAndUser_Email(
+            Long id,
+            String email
+    );
+
+    List<Transaction> findByUser_EmailAndTransactionDateBetween(
+            String email,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+    boolean existsByUser_Email(String email);
 }

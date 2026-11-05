@@ -20,11 +20,18 @@ public interface NotificationService {
 
     void markAllAsRead();
 
-    List<Notification> findByStatus(
-            NotificationStatus status
-    );
+    List<Notification> findByStatus(NotificationStatus status);
 
-    List<Notification> findByType(
-            NotificationType type
+    List<Notification> findByType(NotificationType type);
+
+    long getUnreadCount();
+
+    Notification createForUser(
+            Long userId,
+            String title,
+            String message,
+            NotificationType type,
+            String actionLabel,
+            String actionUrl
     );
 }

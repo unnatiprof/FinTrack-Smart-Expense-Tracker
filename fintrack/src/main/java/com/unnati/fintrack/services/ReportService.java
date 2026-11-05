@@ -10,32 +10,15 @@ import com.unnati.fintrack.dto.response.MonthlySummaryDto;
 
 public interface ReportService {
 
-    MonthlySummaryDto getMonthlySummary(
-            Integer month,
-            Integer year
-    );
+    MonthlySummaryDto getMonthlySummary(Integer month, Integer year);
 
-    List<IncomeExpenseDto> getIncomeVsExpense(
-            Integer year
-    );
+    List<IncomeExpenseDto> getIncomeVsExpense(Integer year);
 
-    List<CategorySpendingDto> getCategorySpending(
-            Integer month,
-            Integer year
-    );
+    List<CategorySpendingDto> getCategorySpending(Integer month, Integer year);
 
-    List<AccountSpendingDto> getAccountSpending(
-            Integer month,
-            Integer year
-    );
+    List<AccountSpendingDto> getAccountSpending(Integer month, Integer year);
 
-    List<BudgetPerformanceDto> getBudgetPerformance(
-            Integer month,
-            Integer year
-    );
+    List<BudgetPerformanceDto> getBudgetPerformance(Integer month, Integer year);
 
-    byte[] exportCsv(
-            Integer month,
-            Integer year
-    );
+    byte[] exportCsv(Integer month, Integer year);
 }

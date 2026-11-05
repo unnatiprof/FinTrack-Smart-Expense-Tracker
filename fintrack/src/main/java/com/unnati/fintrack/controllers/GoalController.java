@@ -30,10 +30,8 @@ public class GoalController {
         this.goalService = goalService;
     }
 
-    // =========================================================
     // GET ALL GOALS
     // GET /api/goals
-    // =========================================================
     @GetMapping
     public ResponseEntity<List<Goal>> getAllGoals() {
 
@@ -42,10 +40,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // GET GOALS BY PRIORITY
     // GET /api/goals/priority/{priority}
-    // =========================================================
     @GetMapping("/priority/{priority}")
     public ResponseEntity<List<Goal>> getGoalsByPriority(
             @PathVariable GoalPriority priority) {
@@ -55,10 +51,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // GET GOALS BY STATUS
     // GET /api/goals/status/{status}
-    // =========================================================
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Goal>> getGoalsByStatus(
             @PathVariable GoalStatus status) {
@@ -68,10 +62,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // GET GOALS BY EXACT DEADLINE
     // GET /api/goals/deadline/{deadline}
-    // =========================================================
     @GetMapping("/deadline/{deadline}")
     public ResponseEntity<List<Goal>> getGoalsByDeadline(
             @PathVariable LocalDate deadline) {
@@ -81,10 +73,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // GET GOALS BY DEADLINE RANGE
-    // GET /api/goals/date-range?startDate=...&endDate=...
-    // =========================================================
+    // GET /api/goals/date-range?startDate=2026-11-01&endDate=2026-12-31
     @GetMapping("/date-range")
     public ResponseEntity<List<Goal>> getGoalsByDeadlineRange(
             @RequestParam LocalDate startDate,
@@ -98,10 +88,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // GET GOALS BY NAME
     // GET /api/goals/name/{goalName}
-    // =========================================================
     @GetMapping("/name/{goalName}")
     public ResponseEntity<List<Goal>> getGoalsByName(
             @PathVariable String goalName) {
@@ -111,11 +99,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
-    // GET GOAL BY ID
-    // GET /api/goals/{id}
-    // =========================================================
-    
+    // GET GOALS WITH DEADLINE BEFORE A DATE
+    // GET /api/goals/deadline-before?deadline=2026-12-31
     @GetMapping("/deadline-before")
     public ResponseEntity<List<Goal>> getGoalsByDeadlineBefore(
             @RequestParam LocalDate deadline) {
@@ -124,6 +109,9 @@ public class GoalController {
                 goalService.findByDeadlineBefore(deadline)
         );
     }
+
+    // GET GOAL BY ID
+    // GET /api/goals/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Goal> getGoalById(
             @PathVariable Long id) {
@@ -133,10 +121,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // CREATE GOAL
     // POST /api/goals
-    // =========================================================
     @PostMapping
     public ResponseEntity<Goal> createGoal(
             @RequestBody Goal goal) {
@@ -152,10 +138,8 @@ public class GoalController {
                 .body(savedGoal);
     }
 
-    // =========================================================
     // UPDATE GOAL
     // PUT /api/goals/{id}
-    // =========================================================
     @PutMapping("/{id}")
     public ResponseEntity<Goal> updateGoal(
             @PathVariable Long id,
@@ -166,10 +150,8 @@ public class GoalController {
         );
     }
 
-    // =========================================================
     // DELETE GOAL
     // DELETE /api/goals/{id}
-    // =========================================================
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGoal(
             @PathVariable Long id) {

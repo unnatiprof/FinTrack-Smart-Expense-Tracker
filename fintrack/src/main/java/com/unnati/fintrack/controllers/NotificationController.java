@@ -1,18 +1,10 @@
 package com.unnati.fintrack.controllers;
 
-import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.unnati.fintrack.entity.Notification;
 import com.unnati.fintrack.enums.NotificationStatus;
@@ -27,138 +19,75 @@ public class NotificationController {
 
     public NotificationController(
             NotificationService notificationService) {
-
-        this.notificationService =
-                notificationService;
+        this.notificationService = notificationService;
     }
-
-    // =========================================================
-    // GET ALL NOTIFICATIONS
-    // GET /api/notifications
-    // =========================================================
 
     @GetMapping
-    public ResponseEntity<List<Notification>>
-    getAllNotifications() {
-
-        return ResponseEntity.ok(
-                notificationService.findAll()
-        );
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        return ResponseEntity.ok(notificationService.findAll());
     }
-
-    // =========================================================
-    // GET NOTIFICATION BY ID
-    // GET /api/notifications/{id}
-    // =========================================================
 
     @GetMapping("/{id}")
-    public ResponseEntity<Notification>
-    getNotificationById(
+    public ResponseEntity<Notification> getNotificationById(
             @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                notificationService.findById(id)
-        );
+        return ResponseEntity.ok(notificationService.findById(id));
     }
-
-    // =========================================================
-    // CREATE NOTIFICATION
-    // POST /api/notifications
-    // =========================================================
 
     @PostMapping
-    public ResponseEntity<Notification>
-    createNotification(
+    public ResponseEntity<Notification> createNotification(
             @RequestBody Notification notification) {
 
-        Notification savedNotification =
-                notificationService.save(notification);
-
-        URI location = URI.create(
-                "/api/notifications/"
-                        + savedNotification.getId()
-        );
-
-        return ResponseEntity
-                .created(location)
-                .body(savedNotification);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(notificationService.save(notification));
     }
 
-    // =========================================================
-    // MARK AS READ
-    // PATCH /api/notifications/{id}/read
-    // =========================================================
-
     @PatchMapping("/{id}/read")
-    public ResponseEntity<Notification>
-    markAsRead(
+    public ResponseEntity<Notification> markAsRead(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                notificationService.markAsRead(id)
-        );
+                notificationService.markAsRead(id));
     }
 
-    // =========================================================
-    // MARK ALL AS READ
-    // PATCH /api/notifications/read-all
-    // =========================================================
-
     @PatchMapping("/read-all")
-    public ResponseEntity<Void>
-    markAllAsRead() {
+    public ResponseEntity<String> markAllAsRead() {
 
         notificationService.markAllAsRead();
 
-        return ResponseEntity
-                .noContent()
-                .build();
+        return ResponseEntity.ok(
+                "All notifications marked as read");
     }
 
-    // =========================================================
-    // DELETE
-    // DELETE /api/notifications/{id}
-    // =========================================================
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void>
-    deleteNotification(
+    public ResponseEntity<String> deleteNotification(
             @PathVariable Long id) {
 
         notificationService.deleteById(id);
 
-        return ResponseEntity
-                .noContent()
-                .build();
+        return ResponseEntity.ok(
+                "Notification deleted successfully");
     }
 
-    // =========================================================
-    // FILTER BY STATUS
-    // GET /api/notifications/status/UNREAD
-    // =========================================================
-
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Notification>>
-    getNotificationsByStatus(
+    public ResponseEntity<List<Notification>> getByStatus(
             @PathVariable NotificationStatus status) {
 
         return ResponseEntity.ok(
-                notificationService.findByStatus(status)
-        );
+                notificationService.findByStatus(status));
     }
 
-    // =========================================================
-    // FILTER BY TYPE
-    // GET /api/notifications/type/BUDGET
-    // =========================================================
-
     @GetMapping("/type/{type}")
-    public ResponseEntity<List<Notification>>
-    getNotificationsByType(
+    public ResponseEntity<List<Notification>> getByType(
             @PathVariable NotificationType type) {
 
         return ResponseEntity.ok(
-                notificationService.findByType(type)
-        );
+                notificationService.findByType(type));
+    }
+
+    @GetMapping("/unread-count")
+    public ResponseEntity<Long> getUnreadCount() {
+
+        return ResponseEntity.ok(
+                notificationService.getUnreadCount());
     }
 }

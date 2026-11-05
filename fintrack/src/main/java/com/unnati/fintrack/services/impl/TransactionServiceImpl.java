@@ -15,6 +15,8 @@ import com.unnati.fintrack.repository.TransactionRepository;
 import com.unnati.fintrack.services.TransactionService;
 import com.unnati.fintrack.services.UserService;
 
+
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
@@ -34,40 +36,65 @@ public class TransactionServiceImpl implements TransactionService {
         this.userService = userService;
     }
 
+    private String getCurrentUserEmail() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
+                authentication.getPrincipal().equals("anonymousUser")) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "User is not authenticated"
+            );
+        }
+
+        return authentication.getName();
+    }
+
     @Override
     public List<Transaction> findAll() {
 
-        return transactionRepository.findAll();
+        String email = getCurrentUserEmail();
+
+        return transactionRepository.findByUser_Email(email);
     }
 
     @Override
     public Transaction findById(Long id) {
 
-        return transactionRepository.findById(id)
+        String email = getCurrentUserEmail();
+
+        return transactionRepository
+                .findByIdAndUser_Email(id, email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Transaction not found with id: " + id
+                                "Transaction not found"
                         ));
     }
 
     @Override
     public Transaction save(Transaction transaction) {
+    	
+    	if (transaction.getId() != null) {
+    	    throw new IllegalArgumentException(
+    	        "Transaction ID must not be provided when creating a transaction"
+    	    );
+    	}
 
-        Transaction savedTransaction =
-                transactionRepository.save(transaction);
-
-        Authentication authentication =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
-
-        String email = authentication.getName();
+        String email = getCurrentUserEmail();
 
         User user = userService.findByEmail(email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "User not found with email: " + email
+                                "User not found: " + email
                         ));
+
+        // Assign transaction ownership on the server.
+        transaction.setUser(user);
+
+        Transaction savedTransaction =
+                transactionRepository.save(transaction);
 
         eventPublisher.publishEvent(
                 new TransactionCreatedEvent(
@@ -101,6 +128,8 @@ public class TransactionServiceImpl implements TransactionService {
         existingTransaction.setTransactionStatus(transaction.getTransactionStatus());
         existingTransaction.setNotes(transaction.getNotes());
 
+        // Never accept a user relationship from the request body.
+
         return transactionRepository.save(existingTransaction);
     }
 
@@ -111,4 +140,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionRepository.delete(existingTransaction);
     }
+    
+
 }

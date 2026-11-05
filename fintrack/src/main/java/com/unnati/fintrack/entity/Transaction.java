@@ -3,6 +3,7 @@ package com.unnati.fintrack.entity;  // package
 import java.math.BigDecimal;  // for money precision
 import java.time.LocalDate;  // best for local date
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unnati.fintrack.enums.PaymentMode;  // imported payment mode enum.
 import com.unnati.fintrack.enums.TransactionStatus;  // imported transaction status enum.
 import com.unnati.fintrack.enums.TransactionType;  // imported transaction type enum.
@@ -19,6 +20,9 @@ import lombok.Builder;  // for importing @Builder.
 import lombok.Getter;  // for importing @Getter
 import lombok.NoArgsConstructor;  //  for importing @NoArgsContructor.
 import lombok.Setter;  //for importing @Setter.
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Getter
 @Setter
@@ -56,4 +60,11 @@ public class Transaction {
     private TransactionStatus transactionStatus;
 
     private String notes;
+    
+    
+    
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

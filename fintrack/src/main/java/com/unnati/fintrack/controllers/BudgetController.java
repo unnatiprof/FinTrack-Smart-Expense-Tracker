@@ -29,9 +29,10 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
-    // Get all budgets
+    // Get all budgets of authenticated user
     @GetMapping
     public ResponseEntity<List<Budget>> getAllBudgets() {
+
         return ResponseEntity.ok(
                 budgetService.findAll()
         );
@@ -121,10 +122,7 @@ public class BudgetController {
             @RequestParam Integer year) {
 
         return ResponseEntity.ok(
-                budgetService.findByMonthAndYear(
-                        month,
-                        year
-                )
+                budgetService.findByMonthAndYear(month, year)
         );
     }
 

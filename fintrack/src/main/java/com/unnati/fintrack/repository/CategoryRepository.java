@@ -1,3 +1,4 @@
+
 package com.unnati.fintrack.repository;
 
 import java.util.List;
@@ -9,26 +10,35 @@ import com.unnati.fintrack.entity.Category;
 import com.unnati.fintrack.enums.CategoryStatus;
 import com.unnati.fintrack.enums.CategoryType;
 
+public interface CategoryRepository
+        extends JpaRepository<Category, Long> {
 
-public interface CategoryRepository extends JpaRepository<Category, Long>
-{
-      List<Category> findByCategory(CategoryType category);
-      
-      List<Category> findByStatus(CategoryStatus status);
+    // Existing category filters
+    List<Category> findByCategory(CategoryType category);
 
-      Optional<Category> findByNameIgnoreCase(String name);
+    List<Category> findByStatus(CategoryStatus status);
 
-      List<Category> findByNameContainingIgnoreCase(String keyword);
-      
-      List<Category> findByUser_Email(String email);
+    Optional<Category> findByNameIgnoreCase(String name);
 
-      Optional<Category> findByIdAndUser_Email(Long id, String email);
+    List<Category> findByNameContainingIgnoreCase(String keyword);
 
-      List<Category> findByUserIsNull();
+    // User-owned categories
+    List<Category> findByUser_Email(String email);
 
-      List<Category> findByUser_EmailOrUserIsNull(String email);
+    Optional<Category> findByIdAndUser_Email(
+            Long id, String email);
 
-      boolean existsByNameIgnoreCaseAndUser_Email(String name, String email);
+    // Global categories
+    List<Category> findByUserIsNull();
 
-      boolean existsByNameIgnoreCase(String name);
+    Optional<Category> findByIdAndUserIsNull(Long id);
+
+    // Global + current user's categories
+    List<Category> findByUser_EmailOrUserIsNull(String email);
+
+    // Duplicate checks
+    boolean existsByNameIgnoreCaseAndUser_Email(
+            String name, String email);
+
+    boolean existsByNameIgnoreCase(String name);
 }

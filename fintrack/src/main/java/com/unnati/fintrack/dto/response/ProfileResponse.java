@@ -18,4 +18,5 @@ public class ProfileResponse {
     private String role;
     private String status;
     private LocalDateTime lastLogin;
+    private LocalDateTime createdAt;
 }

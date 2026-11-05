@@ -1,3 +1,4 @@
+
 package com.unnati.fintrack.bootstrap;
 
 import java.math.BigDecimal;
@@ -109,6 +110,17 @@ public class BootstrapData implements CommandLineRunner {
     }
 
     // ---------------------------------------------------------
+    // COMMON DEMO USER
+    // ---------------------------------------------------------
+
+    private User getDemoUser() {
+
+        return userRepository.findByEmail("unnati@example.com")
+                .orElseThrow(() ->
+                        new RuntimeException("Demo user not found: unnati@example.com"));
+    }
+
+    // ---------------------------------------------------------
     // USERS
     // ---------------------------------------------------------
 
@@ -167,12 +179,15 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadAccounts() {
 
+        User demoUser = getDemoUser();
+
         Account account1 = Account.builder()
                 .accountName("Cash Wallet")
                 .accountType(AccountType.CASH)
                 .currentBalance(new BigDecimal("2500.00"))
                 .currency(CurrencyType.INR)
                 .status(AccountStatus.ACTIVE)
+                .user(demoUser)
                 .build();
 
         Account account2 = Account.builder()
@@ -181,6 +196,7 @@ public class BootstrapData implements CommandLineRunner {
                 .currentBalance(new BigDecimal("35000.00"))
                 .currency(CurrencyType.INR)
                 .status(AccountStatus.ACTIVE)
+                .user(demoUser)
                 .build();
 
         Account account3 = Account.builder()
@@ -189,6 +205,7 @@ public class BootstrapData implements CommandLineRunner {
                 .currentBalance(new BigDecimal("15000.00"))
                 .currency(CurrencyType.INR)
                 .status(AccountStatus.ACTIVE)
+                .user(demoUser)
                 .build();
 
         Account account4 = Account.builder()
@@ -197,6 +214,7 @@ public class BootstrapData implements CommandLineRunner {
                 .currentBalance(new BigDecimal("1200.00"))
                 .currency(CurrencyType.INR)
                 .status(AccountStatus.ACTIVE)
+                .user(demoUser)
                 .build();
 
         Account account5 = Account.builder()
@@ -205,6 +223,7 @@ public class BootstrapData implements CommandLineRunner {
                 .currentBalance(new BigDecimal("900.00"))
                 .currency(CurrencyType.INR)
                 .status(AccountStatus.ACTIVE)
+                .user(demoUser)
                 .build();
 
         accountRepository.save(account1);
@@ -273,6 +292,8 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadTransactions() {
 
+        User demoUser = getDemoUser();
+
         Transaction transaction1 = Transaction.builder()
                 .title("College Canteen Lunch")
                 .description("Lunch at college canteen")
@@ -284,6 +305,7 @@ public class BootstrapData implements CommandLineRunner {
                 .transactionDate(LocalDate.now().minusDays(1))
                 .transactionStatus(TransactionStatus.COMPLETED)
                 .notes("Regular lunch expense")
+                .user(demoUser)
                 .build();
 
         Transaction transaction2 = Transaction.builder()
@@ -297,6 +319,7 @@ public class BootstrapData implements CommandLineRunner {
                 .transactionDate(LocalDate.now().minusDays(2))
                 .transactionStatus(TransactionStatus.COMPLETED)
                 .notes("Travel expense")
+                .user(demoUser)
                 .build();
 
         Transaction transaction3 = Transaction.builder()
@@ -310,6 +333,7 @@ public class BootstrapData implements CommandLineRunner {
                 .transactionDate(LocalDate.now().minusDays(3))
                 .transactionStatus(TransactionStatus.COMPLETED)
                 .notes("College stationery")
+                .user(demoUser)
                 .build();
 
         Transaction transaction4 = Transaction.builder()
@@ -323,6 +347,7 @@ public class BootstrapData implements CommandLineRunner {
                 .transactionDate(LocalDate.now().minusDays(4))
                 .transactionStatus(TransactionStatus.COMPLETED)
                 .notes("Shopping expense")
+                .user(demoUser)
                 .build();
 
         Transaction transaction5 = Transaction.builder()
@@ -336,6 +361,7 @@ public class BootstrapData implements CommandLineRunner {
                 .transactionDate(LocalDate.now().minusDays(5))
                 .transactionStatus(TransactionStatus.COMPLETED)
                 .notes("Hostel mess bill")
+                .user(demoUser)
                 .build();
 
         transactionRepository.save(transaction1);
@@ -351,6 +377,8 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadBudgets() {
 
+        User demoUser = getDemoUser();
+
         LocalDate startDate = LocalDate.now().withDayOfMonth(1);
         LocalDate endDate = startDate.plusMonths(1).minusDays(1);
 
@@ -363,6 +391,7 @@ public class BootstrapData implements CommandLineRunner {
                 .startDate(startDate)
                 .endDate(endDate)
                 .status(BudgetStatus.INACTIVE)
+                .user(demoUser)
                 .build();
 
         Budget budget2 = Budget.builder()
@@ -374,6 +403,7 @@ public class BootstrapData implements CommandLineRunner {
                 .startDate(startDate)
                 .endDate(endDate)
                 .status(BudgetStatus.COMPLETED)
+                .user(demoUser)
                 .build();
 
         Budget budget3 = Budget.builder()
@@ -385,6 +415,7 @@ public class BootstrapData implements CommandLineRunner {
                 .startDate(startDate)
                 .endDate(endDate)
                 .status(BudgetStatus.EXCEEDED)
+                .user(demoUser)
                 .build();
 
         Budget budget4 = Budget.builder()
@@ -396,6 +427,7 @@ public class BootstrapData implements CommandLineRunner {
                 .startDate(startDate)
                 .endDate(endDate)
                 .status(BudgetStatus.COMPLETED)
+                .user(demoUser)
                 .build();
 
         Budget budget5 = Budget.builder()
@@ -407,6 +439,7 @@ public class BootstrapData implements CommandLineRunner {
                 .startDate(startDate)
                 .endDate(endDate)
                 .status(BudgetStatus.COMPLETED)
+                .user(demoUser)
                 .build();
 
         budgetRepository.save(budget1);
@@ -422,6 +455,8 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadGoals() {
 
+        User demoUser = getDemoUser();
+
         Goal goal1 = Goal.builder()
                 .goalName("Laptop Fund")
                 .targetAmount(new BigDecimal("80000.00"))
@@ -430,6 +465,7 @@ public class BootstrapData implements CommandLineRunner {
                 .icon("laptop")
                 .priority(GoalPriority.HIGH)
                 .status(GoalStatus.IN_PROGRESS)
+                .user(demoUser)
                 .build();
 
         Goal goal2 = Goal.builder()
@@ -440,6 +476,7 @@ public class BootstrapData implements CommandLineRunner {
                 .icon("flight")
                 .priority(GoalPriority.MEDIUM)
                 .status(GoalStatus.IN_PROGRESS)
+                .user(demoUser)
                 .build();
 
         Goal goal3 = Goal.builder()
@@ -450,6 +487,7 @@ public class BootstrapData implements CommandLineRunner {
                 .icon("security")
                 .priority(GoalPriority.HIGH)
                 .status(GoalStatus.IN_PROGRESS)
+                .user(demoUser)
                 .build();
 
         Goal goal4 = Goal.builder()
@@ -460,6 +498,7 @@ public class BootstrapData implements CommandLineRunner {
                 .icon("home")
                 .priority(GoalPriority.LOW)
                 .status(GoalStatus.IN_PROGRESS)
+                .user(demoUser)
                 .build();
 
         goalRepository.save(goal1);
@@ -474,65 +513,67 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadNotifications() {
 
-        Notification notification1 = Notification.builder()
-                .title("Budget Limit Warning")
-                .message("You have used 89% of your Shopping budget.")
-                .type(NotificationType.BUDGET)
-                .status(NotificationStatus.UNREAD)
-                .createdAt(LocalDateTime.now().minusHours(2))
-                .actionLabel("Review Budget")
-                .actionUrl("/api/budgets/2")
-                .build();
+        User demoUser = getDemoUser();
 
-        Notification notification2 = Notification.builder()
-                .title("Budget Exceeded")
-                .message("Your Travel budget has exceeded its limit.")
-                .type(NotificationType.BUDGET)
-                .status(NotificationStatus.UNREAD)
-                .createdAt(LocalDateTime.now().minusHours(5))
-                .actionLabel("Review Budget")
-                .actionUrl("/api/budgets/3")
-                .build();
+        Notification notification1 = new Notification();
+        notification1.setTitle("Budget Limit Warning");
+        notification1.setMessage("You have used 89% of your Shopping budget.");
+        notification1.setType(NotificationType.BUDGET);
+        notification1.setStatus(NotificationStatus.UNREAD);
+        notification1.setCreatedAt(LocalDateTime.now().minusHours(2));
+        notification1.setActionLabel("Review Budget");
+        notification1.setActionUrl("/api/budgets/2");
+        notification1.setUser(demoUser);
 
-        Notification notification3 = Notification.builder()
-                .title("Goal Progress Update")
-                .message("Your Emergency Fund is 90% complete. Keep going!")
-                .type(NotificationType.GOAL)
-                .status(NotificationStatus.UNREAD)
-                .createdAt(LocalDateTime.now().minusDays(1))
-                .actionLabel("View Goal")
-                .actionUrl("/api/goals/3")
-                .build();
+        Notification notification2 = new Notification();
+        notification2.setTitle("Budget Exceeded");
+        notification2.setMessage("Your Travel budget has exceeded its limit.");
+        notification2.setType(NotificationType.BUDGET);
+        notification2.setStatus(NotificationStatus.UNREAD);
+        notification2.setCreatedAt(LocalDateTime.now().minusHours(5));
+        notification2.setActionLabel("Review Budget");
+        notification2.setActionUrl("/api/budgets/3");
+        notification2.setUser(demoUser);
 
-        Notification notification4 = Notification.builder()
-                .title("New Login Detected")
-                .message("A new login to your FinTrack account was detected.")
-                .type(NotificationType.SECURITY)
-                .status(NotificationStatus.READ)
-                .createdAt(LocalDateTime.now().minusDays(1).minusHours(3))
-                .actionLabel("Review Security")
-                .actionUrl("/api/users/profile")
-                .build();
+        Notification notification3 = new Notification();
+        notification3.setTitle("Goal Progress Update");
+        notification3.setMessage("Your Emergency Fund is 90% complete. Keep going!");
+        notification3.setType(NotificationType.GOAL);
+        notification3.setStatus(NotificationStatus.UNREAD);
+        notification3.setCreatedAt(LocalDateTime.now().minusDays(1));
+        notification3.setActionLabel("View Goal");
+        notification3.setActionUrl("/api/goals/3");
+        notification3.setUser(demoUser);
 
-        Notification notification5 = Notification.builder()
-                .title("Monthly Report Ready")
-                .message("Your latest monthly spending report is ready to review.")
-                .type(NotificationType.SYSTEM)
-                .status(NotificationStatus.READ)
-                .createdAt(LocalDateTime.now().minusDays(2))
-                .actionLabel("View Report")
-                .actionUrl("/api/reports")
-                .build();
+        Notification notification4 = new Notification();
+        notification4.setTitle("New Login Detected");
+        notification4.setMessage("A new login to your FinTrack account was detected.");
+        notification4.setType(NotificationType.SECURITY);
+        notification4.setStatus(NotificationStatus.READ);
+        notification4.setCreatedAt(LocalDateTime.now().minusDays(1).minusHours(3));
+        notification4.setActionLabel("Review Security");
+        notification4.setActionUrl("/api/users/profile");
+        notification4.setUser(demoUser);
 
-        Notification notification6 = Notification.builder()
-                .title("Budget Reminder")
-                .message("You are approaching the limit of your Food budget.")
-                .type(NotificationType.BUDGET)
-                .status(NotificationStatus.UNREAD)
-                .createdAt(LocalDateTime.now().minusDays(2).minusHours(4))
-                .actionLabel("Review Budget")
-                .actionUrl("/api/budgets/1")
-                .build();
+        Notification notification5 = new Notification();
+        notification5.setTitle("Monthly Report Ready");
+        notification5.setMessage("Your latest monthly spending report is ready to review.");
+        notification5.setType(NotificationType.SYSTEM);
+        notification5.setStatus(NotificationStatus.READ);
+        notification5.setCreatedAt(LocalDateTime.now().minusDays(2));
+        notification5.setActionLabel("View Report");
+        notification5.setActionUrl("/api/reports");
+        notification5.setUser(demoUser);
+
+        Notification notification6 = new Notification();
+        notification6.setTitle("Budget Reminder");
+        notification6.setMessage("You are approaching the limit of your Food budget.");
+        notification6.setType(NotificationType.BUDGET);
+        notification6.setStatus(NotificationStatus.UNREAD);
+        notification6.setCreatedAt(LocalDateTime.now().minusDays(2).minusHours(4));
+        notification6.setActionLabel("Review Budget");
+        notification6.setActionUrl("/api/budgets/1");
+        notification6.setUser(demoUser);
 
         notificationRepository.save(notification1);
         notificationRepository.save(notification2);

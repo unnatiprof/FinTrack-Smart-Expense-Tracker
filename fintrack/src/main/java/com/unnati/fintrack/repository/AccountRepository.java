@@ -7,6 +7,7 @@ import com.unnati.fintrack.entity.Account;
 import com.unnati.fintrack.enums.AccountType;
 import com.unnati.fintrack.enums.AccountStatus;
 import com.unnati.fintrack.enums.CurrencyType;
+import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long>
 {
@@ -17,5 +18,9 @@ public interface AccountRepository extends JpaRepository<Account, Long>
     List<Account> findByCurrency(CurrencyType currency);
 
     List<Account> findByAccountNameContainingIgnoreCase(String accountName);
+    
+    List<Account> findByUser_Email(String email);
+
+    Optional<Account> findByIdAndUser_Email(Long id, String email);
 
 }

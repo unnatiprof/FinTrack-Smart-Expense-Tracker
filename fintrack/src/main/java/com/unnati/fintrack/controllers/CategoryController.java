@@ -1,3 +1,4 @@
+
 package com.unnati.fintrack.controllers;
 
 import java.net.URI;
@@ -26,35 +27,49 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    // GET ALL
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
+
         return ResponseEntity.ok(categoryService.findAll());
     }
 
+    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategoryById(
+            @PathVariable Long id) {
+
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
+    // CREATE
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(
+            @RequestBody Category category) {
+
         Category savedCategory = categoryService.save(category);
 
-        URI location = URI.create("/api/categories/" + savedCategory.getId());
+        URI location = URI.create(
+                "/api/categories/" + savedCategory.getId());
 
         return ResponseEntity.created(location).body(savedCategory);
     }
 
+    // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id,
             @RequestBody Category category) {
 
-        return ResponseEntity.ok(categoryService.update(id, category));
+        return ResponseEntity.ok(
+                categoryService.update(id, category));
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategory(
+            @PathVariable Long id) {
+
         categoryService.deleteById(id);
 
         return ResponseEntity.noContent().build();

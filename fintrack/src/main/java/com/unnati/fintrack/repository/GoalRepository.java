@@ -2,6 +2,7 @@ package com.unnati.fintrack.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,18 +12,46 @@ import com.unnati.fintrack.enums.GoalStatus;
 
 public interface GoalRepository extends JpaRepository<Goal, Long> {
 
-    List<Goal> findByPriority(GoalPriority priority);
+    // Find all goals belonging to a user
+    List<Goal> findByUser_Email(String email);
 
-    List<Goal> findByStatus(GoalStatus status);
+    // Find one goal only if it belongs to the user
+    Optional<Goal> findByIdAndUser_Email(Long id, String email);
 
-    List<Goal> findByDeadline(LocalDate deadline);
+    // Filter by priority
+    List<Goal> findByUser_EmailAndPriority(
+            String email,
+            GoalPriority priority
+    );
 
-    List<Goal> findByDeadlineBetween(
+    // Filter by status
+    List<Goal> findByUser_EmailAndStatus(
+            String email,
+            GoalStatus status
+    );
+
+    // Filter by exact deadline
+    List<Goal> findByUser_EmailAndDeadline(
+            String email,
+            LocalDate deadline
+    );
+
+    // Filter by deadline range
+    List<Goal> findByUser_EmailAndDeadlineBetween(
+            String email,
             LocalDate startDate,
             LocalDate endDate
     );
 
-    List<Goal> findByGoalName(String goalName);
+    // Search by goal name
+    List<Goal> findByUser_EmailAndGoalNameContainingIgnoreCase(
+            String email,
+            String goalName
+    );
 
-    List<Goal> findByDeadlineBefore(LocalDate deadline);
+    // Find goals with deadlines before a date
+    List<Goal> findByUser_EmailAndDeadlineBefore(
+            String email,
+            LocalDate deadline
+    );
 }
